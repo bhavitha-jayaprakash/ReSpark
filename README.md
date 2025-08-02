@@ -22,7 +22,7 @@ Through a clean, habit-tracking interface, users log their aging electronics, ea
 [ReSpark-Github-Repository](https://github.com/bhavitha-jayaprakash/ReSpark)
 
 ## Deployed Website
-[ReSpark.com](https://)
+[ReSpark.com](https://re-spark.vercel.app/)
 
 ## Team Members & Roles
 - Bhavitha Jayaprakash – Project Lead & Strategy
@@ -30,7 +30,11 @@ Through a clean, habit-tracking interface, users log their aging electronics, ea
 - Gopika M - Documentation
 
 ## Screenshot
-Include a screenshot of your project UI or working demo:
+![Home_page](assets/Screenshot%202025-08-02%20204850.png)
+![Item_page](assets/Screenshot%202025-08-02%20204921.png)
+![Map](assets/Screenshot%202025-08-02%20204937.png)
+![Profile](assets/Screenshot%202025-08-02%20205003.png)
+![Rewards](assets/Screenshot%202025-08-02%20205013.png)
 
 ---
 ## Additional Notes
