@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReSpark - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="pb-32 md:pb-8">
+    <div class="aurora-bg"></div>
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-10 fade-in-subtle">
+            <h1 class="text-4xl font-bold text-slate-800">Re<span class="text-sky-500">Spark</span></h1>
+            <p class="text-slate-500 mt-2 max-w-xl mx-auto">The Pre-Cycling Revolution. Give your electronics a second life.</p>
+        </header>
+        <main>
+            <h2 class="text-xl font-semibold text-slate-700 mb-4">Your Active Items</h2>
+            <div id="item-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            <div id="empty-state" class="text-center py-16 px-6 glass-card mt-4 hidden">
+                <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
+                <h3 class="mt-2 text-sm font-medium text-slate-900">No active items</h3>
+                <p class="mt-1 text-sm text-slate-500">Tap the '+' button to log an item.</p>
+            </div>
+        </main>
+    </div>
+
+    <button id="add-item-btn" class="fixed bottom-24 md:bottom-10 right-5 h-14 w-14 bg-sky-500 text-white rounded-full flex items-center justify-center shadow-lg transform transition hover:scale-110">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    </button>
+
+    <div id="add-item-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-sm">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Log a New Item</h3>
+            <form id="add-item-form">
+                <div class="mb-4">
+                    <label for="item-select" class="block text-sm font-medium text-gray-700">Item Type</label>
+                    <select id="item-select" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm" required></select>
+                </div>
+                <div class="mb-6">
+                    <label for="condition-select" class="block text-sm font-medium text-gray-700">Current Condition</label>
+                    <select id="condition-select" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm" required></select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" id="cancel-btn" class="px-4 py-2 rounded">Cancel</button>
+                    <button type="submit" class="bg-sky-500 text-white px-4 py-2 rounded">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <nav class="bottom-nav flex justify-around">
+        <a href="index.html" class="nav-link active flex-grow flex flex-col items-center justify-center p-2 transition-transform">
+            <div class="nav-icon-bg h-8 w-12 rounded-full flex items-center justify-center transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
+            </div>
+            <span class="text-xs mt-1">Dashboard</span>
+        </a>
+        <a href="profile.html" class="nav-link flex-grow flex flex-col items-center justify-center p-2 text-slate-500 transition-transform">
+            <div class="nav-icon-bg h-8 w-12 rounded-full flex items-center justify-center transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            </div>
+            <span class="text-xs mt-1">Profile</span>
+        </a>
+    </nav>
+
+    <script src="./js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const itemGrid = document.getElementById('item-grid');
+            const emptyState = document.getElementById('empty-state');
+            const modal = document.getElementById('add-item-modal');
+            const addItemBtn = document.getElementById('add-item-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const addItemForm = document.getElementById('add-item-form');
+            const itemSelect = document.getElementById('item-select');
+            const conditionSelect = document.getElementById('condition-select');
+
+            
+            for (const key in ARKAVS_ELECTRONICS) {
+                itemSelect.innerHTML += `<option value="${key}">${ARKAVS_ELECTRONICS[key].name}</option>`;
+            }
+            for (const key in ARKAVS_CONDITIONS) {
+                conditionSelect.innerHTML += `<option value="${key}">${ARKAVS_CONDITIONS[key].text}</option>`;
+            }
+
+        
+            function renderItems() {
+                itemGrid.innerHTML = '';
+                const items = getItems();
+
+                if (items.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                    items.forEach((item, index) => {
+                        const itemData = ARKAVS_ELECTRONICS[item.itemKey];
+                        const conditionData = ARKAVS_CONDITIONS[item.conditionKey];
+                        
+                        let colorClass = 'bg-green-100 text-green-500';
+                        if (conditionData.severity === 'orange') colorClass = 'bg-orange-100 text-orange-500';
+                        if (conditionData.severity === 'red') colorClass = 'bg-red-100 text-red-500';
+
+                        const card = document.createElement('a');
+                        card.href = `item.html?id=${item.id}`;
+                        card.className = 'glass-card p-5 transition transform hover:-translate-y-1 hover:shadow-xl block slide-in-up-fast';
+                        card.style.animationDelay = `${index * 100}ms`;
+                        
+                        card.innerHTML = `
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 rounded-full ${colorClass} flex items-center justify-center mr-4 text-2xl">${itemData.emoji}</div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 truncate">${itemData.name}</h3>
+                                    <p class="text-sm text-slate-500">${conditionData.text}</p>
+                                </div>
+                            </div>
+                            <div class="text-xs text-slate-400">Added on ${new Date(item.createdAt).toLocaleDateString()}</div>
+                        `;
+                        itemGrid.appendChild(card);
+                    });
+                }
+            }
+
+       
+            addItemBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+            cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+            
+            addItemForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                addItem(itemSelect.value, conditionSelect.value);
+                modal.classList.add('hidden');
+                addItemForm.reset();
+                renderItems();
+            });
+
+            renderItems();
+        });
+    </script>
+</body>
+</html>
