@@ -19,10 +19,10 @@ Through a clean, habit-tracking interface, users log their aging electronics, ea
 - **Repair-First Mapping:** An intelligent, interactive map that defaults to showing local repair shops and community swap events, positioning recycling as a final option rather than the default choice.
 
 ## GitHub Repository Link
-[](https://github.com/bhavitha-jayaprakash/ReSpark)
+[ReSpark-Github-Repository](https://github.com/bhavitha-jayaprakash/ReSpark)
 
 ## Deployed Website
-[](https://)
+[ReSpark.com](https://)
 
 ## Team Members & Roles
 - Bhavitha Jayaprakash – Project Lead & Strategy
